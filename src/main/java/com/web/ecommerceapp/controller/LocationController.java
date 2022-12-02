@@ -40,36 +40,36 @@ public class LocationController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get product by id")
-    public ResponseEntity<LocationResponseDto> getProductById(@PathVariable(name="id") Long id){
+    public ResponseEntity<LocationResponseDto> getLocationById(@PathVariable(name="id") Long id){
         return new ResponseEntity<>(locationService.getLocationById(id),HttpStatus.OK);
     }
     @GetMapping("/{id}/products")
     @ApiOperation(value = "Get products")
-    public ResponseEntity<List<ProductLocationResponseDto>> getProducts(@PathVariable(name="id") Long id){
+    public ResponseEntity<List<ProductLocationResponseDto>> getLocations(@PathVariable(name="id") Long id){
         return new ResponseEntity<>(locationService.getLocationProducts(id),HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     @ApiOperation(value = "Update location")
-    public ResponseEntity<ActionSuccessful> updateProduct(@RequestBody LocationRequestDto productRequestDto,@PathVariable(name="id") Long id){
+    public ResponseEntity<ActionSuccessful> updateLocation(@RequestBody LocationRequestDto productRequestDto,@PathVariable(name="id") Long id){
         return new ResponseEntity<>(locationService.updateLocation(productRequestDto,id),HttpStatus.OK);
     }
 
     @PostMapping("/{locationId}")
     @ApiOperation(value = "Add product to location")
-    public ResponseEntity<ActionSuccessful> addProduct(@RequestBody ProductLocationRequestDto locationAddProductDto, @PathVariable(name="locationId") Long locationId){
+    public ResponseEntity<ActionSuccessful> addLocation(@RequestBody ProductLocationRequestDto locationAddProductDto, @PathVariable(name="locationId") Long locationId){
         return new ResponseEntity<>(locationService.addNewProduct(locationAddProductDto,locationId),HttpStatus.OK);
     }
 
     @PostMapping("/{locationId}/deleteProduct")
     @ApiOperation(value = "Remove product from location")
-    public ResponseEntity<ActionSuccessful> removeProduct(@RequestBody ProductLocationRequestDto productLocationDto, @PathVariable(name="locationId") Long locationId){
+    public ResponseEntity<ActionSuccessful> removeLocation(@RequestBody ProductLocationRequestDto productLocationDto, @PathVariable(name="locationId") Long locationId){
         return new ResponseEntity<>(locationService.removeProduct(productLocationDto,locationId),HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete product")
+    @ApiOperation(value = "Delete location")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ActionSuccessful> deleteProduct(@PathVariable(name="id") Long id){
+    public ResponseEntity<ActionSuccessful> deleteLocation(@PathVariable(name="id") Long id){
         return new ResponseEntity<>(locationService.deleteLocation(id),HttpStatus.OK);
     }
 }

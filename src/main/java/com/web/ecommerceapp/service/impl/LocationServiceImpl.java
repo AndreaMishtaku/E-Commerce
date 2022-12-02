@@ -1,6 +1,7 @@
 package com.web.ecommerceapp.service.impl;
 
 import com.web.ecommerceapp.entity.*;
+import com.web.ecommerceapp.entity.embeddable.ProductLocationId;
 import com.web.ecommerceapp.exception.ResourceNotFoundException;
 import com.web.ecommerceapp.mapper.LocationMapper;
 import com.web.ecommerceapp.payload.location.*;
@@ -13,7 +14,9 @@ import com.web.ecommerceapp.service.LocationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -97,15 +100,22 @@ public class LocationServiceImpl implements LocationService {
              location.getProductLocations()) {
 
             if(pl.getProduct().getId().equals(productLocationDto.getProductId())){
-                System.out.println("Hyri ktu");
                 pl.setStock(pl.getStock()+productLocationDto.getStock());
                 locationRepository.save(location);
                 return new ActionSuccessful(true,"Product added successfully to selected location");
             }
         }
 
-        ProductLocation productLocation=locationMapper.dtoToProductLocation(productLocationDto,location);
+        Product product=productRepository.findById(productLocationDto.productId).orElseThrow(()->new ResourceNotFoundException("Product","id",productLocationDto.getProductId()));
+        //productLocationRepository.save(new ProductLocation(location,product,productLocationDto.getStock()));
+        ProductLocation productLocation=new ProductLocation();
+        productLocation.setLocation(location);
+        productLocation.setProduct(product);
+        productLocation.setStock(productLocationDto.getStock());
+        productLocation.setProductLocationId(new ProductLocationId(location.getId(),product.getId()));
+
         location.getProductLocations().add(productLocation);
+
         locationRepository.save(location);
         return new ActionSuccessful(true,"Product added successfully to selected location");
     }
@@ -131,8 +141,9 @@ public class LocationServiceImpl implements LocationService {
             }
         }
 
-        ProductLocation productLocation=locationMapper.dtoToProductLocation(productLocationDto,location);
-        location.getProductLocations().add(productLocation);
+        Product product=productRepository.findById(productLocationDto.productId).orElseThrow(()->new ResourceNotFoundException("Product","id",productLocationDto.getProductId()));
+
+       // location.getProductLocations().add(new ProductLocation(location,product,productLocationDto.getStock()));
         locationRepository.save(location);
         return new ActionSuccessful(true,"Product removed successfully to selected location");
 
@@ -141,7 +152,9 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public ActionSuccessful deleteLocation(Long id) {
         Location location=locationRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Location","id",id));
+
         locationRepository.delete(location);
+
         return new ActionSuccessful(true,"Location deleted successfully");
     }
 }

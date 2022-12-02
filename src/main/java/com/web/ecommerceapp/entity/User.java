@@ -58,6 +58,6 @@ public class User extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "operator",cascade =CascadeType.ALL)
     private List<OperatorSetting> operatorSettingOperator;
 
-    @OneToOne(fetch = FetchType.EAGER,mappedBy ="manager",cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER,mappedBy ="manager",cascade = CascadeType.ALL,orphanRemoval = true)
     private OperatorSetting operatorSettingManager;
 }

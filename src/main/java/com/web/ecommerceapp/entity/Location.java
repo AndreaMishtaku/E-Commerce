@@ -25,7 +25,7 @@ public class Location extends BaseEntity {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy ="location")
+    @OneToMany(mappedBy ="location",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<ProductLocation> productLocations;
 
     @CreationTimestamp
@@ -38,5 +38,11 @@ public class Location extends BaseEntity {
 
     @OneToOne
     private User user;
+
+    @PreRemove
+    public void preRemove() {
+        //this.getProductLocations().clear();
+        this.getUser().setLocation(null);
+    }
 
 }

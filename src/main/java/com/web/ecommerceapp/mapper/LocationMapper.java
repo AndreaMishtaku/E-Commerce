@@ -27,9 +27,9 @@ public interface LocationMapper {
     @Mapping(source = "product.name",target = "productName")
     ProductLocationResponseDto productLocationtoDto(ProductLocation productLocation);
 
-    @Mapping(source = "productLocationDto.productId",target = "product")
-    @Mapping(source = "location",target = "location")
-    ProductLocation dtoToProductLocation(ProductLocationRequestDto productLocationDto,Location location);
+    @Mapping(source = "productId",target = "product")
+    @Mapping(source = "stock",target ="stock" )
+    ProductLocation dtoToProductLocation(ProductLocationRequestDto productLocationDto);
 
     List<ProductLocationResponseDto> productLocationToDto(List<ProductLocation> productLocation);
     @Mapping(source = "userId",target = "user")
