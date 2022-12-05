@@ -27,6 +27,8 @@ public class PaginationSpecification<T> implements Specification<T> {
 
         for (FilterDto filter : this.request.getFilters()) {
             log.info("Filter: {} {} {}", filter.getColumnName(), filter.getOperator().toString(), filter.getValue());
+
+
             predicate = filter.getOperator().build(root, cb, filter, predicate);
         }
 
