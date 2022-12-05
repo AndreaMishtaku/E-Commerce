@@ -7,8 +7,14 @@ import com.web.ecommerceapp.payload.product.ProductResponseDto;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
 import com.web.ecommerceapp.repository.CategoryRepository;
 import com.web.ecommerceapp.repository.ProductRepository;
+import com.web.ecommerceapp.service.FileService;
 import com.web.ecommerceapp.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -19,15 +25,30 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+    @Autowired
+    private FileService fileService;
+
+    @Value("${project.image}")
+    private String path;
+
+
     public ProductServiceImpl(ProductMapper productMapper, ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productMapper = productMapper;
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+
     }
 
     @Override
-    public ActionSuccessful createProduct(ProductRequestDto productDto) {
+    public ActionSuccessful createProduct(MultipartFile image,ProductRequestDto productDto)  {
         Product product=productMapper.dtoToProduct(productDto);
+
+        try{
+        product.setProductImage(fileService.uploadImage(path,image));
+        }catch(IOException e){
+            return new ActionSuccessful(false,"Error ne upload e imazhit");
+        }
+
         productRepository.save(product);
         return new ActionSuccessful(true,"Shtimi i produktit u krye me sukses");
     }

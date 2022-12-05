@@ -12,8 +12,10 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 @Api(value = "Location Controller", tags = {"Location"},description = "Location Controller")
 @SwaggerDefinition(tags = {@Tag(name = "Location") })
@@ -32,6 +34,8 @@ public class LocationController {
         return new ResponseEntity<>(locationService.createLocation(locationRequestDto), HttpStatus.CREATED);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Get all locations")
     @GetMapping
     public ResponseEntity<List<LocationResponseDto>> getAllLocations(){

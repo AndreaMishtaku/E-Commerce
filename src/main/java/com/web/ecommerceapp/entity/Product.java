@@ -27,8 +27,8 @@ public class Product extends BaseEntity{
     @Column(name="description")
     private String description;
 
-    @Column(name="base64Image")
-    private String base64Image;
+    @Column(name="productImage")
+    private String productImage;
     @Column(name="price")
     private Double price;
 
@@ -36,11 +36,9 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     private Category category;
 
-
     @ManyToOne
     @JoinColumn(name="discount_id",referencedColumnName = "id")
     private Discount discount;
-
 
     @OneToMany(mappedBy = "product")
     private Set<ProductLocation> productLocations;
@@ -51,5 +49,4 @@ public class Product extends BaseEntity{
     @UpdateTimestamp
     @Column(name="updated_at")
     private LocalDateTime updated_at;
-
 }

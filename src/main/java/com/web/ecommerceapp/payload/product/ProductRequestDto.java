@@ -12,13 +12,16 @@ import java.util.UUID;
 public class ProductRequestDto{
     private String name;
     private String description;
-    private String base64Image;
     private Double price;
-
+    @JsonIgnore
+    private String productImage;
     private Long categoryId;
 
-    @JsonIgnore
-    private Discount discount=null;
-
-
+    public ProductRequestDto(ProductResponseDto p) {
+        this.setName(p.getName());
+        this.setDescription(p.getDescription());
+        this.setPrice(p.getPrice());
+        this.setCategoryId(p.getCategoryId());
+        this.setProductImage(p.getProductImage());
+    }
 }
