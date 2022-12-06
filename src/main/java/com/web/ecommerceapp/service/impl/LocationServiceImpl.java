@@ -14,6 +14,7 @@ import com.web.ecommerceapp.service.LocationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,16 +69,29 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationResponseDto getLocationById(Long id) {
+    public LocationResponseDto getLocationById(Principal principal,Long id) {
+        User user=userRepository.getUserByEmail(principal.getName());
+
+        if(user.getLocation().getId()!=id && !isAdmin(user)){
+            throw new RuntimeException("Ju nuk keni akses per kete location");
+        }
+
         Location location=locationRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Location","id",id));
         LocationResponseDto locationResponse=locationMapper.locationToDto(location);
+
 
         return locationResponse;
     }
 
     @Override
-    public List<ProductLocationResponseDto> getLocationProducts(Long id) {
+    public List<ProductLocationResponseDto> getLocationProducts(Principal principal,Long id) {
+        User user=userRepository.getUserByEmail(principal.getName());
         List<ProductLocation> products=productLocationRepository.findByLocation_id(id);
+
+        if(user.getLocation().getId()!=id && !isAdmin(user)){
+            throw new RuntimeException("Ju nuk keni akses per kete location");
+        }
+
         List<ProductLocationResponseDto> productList=locationMapper.productLocationToDto(products);
         return productList;
     }
@@ -156,5 +170,16 @@ public class LocationServiceImpl implements LocationService {
         locationRepository.delete(location);
 
         return new ActionSuccessful(true,"Location deleted successfully");
+    }
+
+    private Boolean isAdmin(User user){
+        for (Role role:user.getRoles()
+             ) {
+            if(role.getName()=="ROLE_ADMIN")
+                return true;
+            else
+                return false;
+        }
+        return false;
     }
 }

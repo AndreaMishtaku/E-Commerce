@@ -7,10 +7,8 @@ import com.web.ecommerceapp.payload.product.ProductResponseDto;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
 import com.web.ecommerceapp.repository.CategoryRepository;
 import com.web.ecommerceapp.repository.ProductRepository;
-import com.web.ecommerceapp.service.FileService;
 import com.web.ecommerceapp.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,11 +23,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    @Autowired
-    private FileService fileService;
 
-    @Value("${project.image}")
-    private String path;
 
 
     public ProductServiceImpl(ProductMapper productMapper, ProductRepository productRepository, CategoryRepository categoryRepository) {
@@ -40,14 +34,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ActionSuccessful createProduct(MultipartFile image,ProductRequestDto productDto)  {
+    public ActionSuccessful createProduct(ProductRequestDto productDto)  {
         Product product=productMapper.dtoToProduct(productDto);
-
-        try{
-        product.setProductImage(fileService.uploadImage(path,image));
-        }catch(IOException e){
-            return new ActionSuccessful(false,"Error ne upload e imazhit");
-        }
 
         productRepository.save(product);
         return new ActionSuccessful(true,"Shtimi i produktit u krye me sukses");
@@ -84,5 +72,19 @@ public class ProductServiceImpl implements ProductService {
         Product product=productRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Product","id",id));
         productRepository.delete(product);
         return new ActionSuccessful(true,"Product deleted successfully");
+    }
+
+    @Override
+    public ActionSuccessful uploadProductImage(MultipartFile image, Long id) throws IOException{
+        Product product=productRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Product","id",id));
+
+
+        byte[] imageArr = image.getBytes();
+        String imageAsString= Base64.encodeBase64String(imageArr);
+        product.setProductImage(imageAsString);
+
+        productRepository.save(product);
+
+        return new ActionSuccessful(true,"Message uploaded successfully");
     }
 }

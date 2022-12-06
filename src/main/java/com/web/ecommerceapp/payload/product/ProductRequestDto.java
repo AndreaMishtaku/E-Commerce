@@ -16,12 +16,4 @@ public class ProductRequestDto{
     @JsonIgnore
     private String productImage;
     private Long categoryId;
-
-    public ProductRequestDto(ProductResponseDto p) {
-        this.setName(p.getName());
-        this.setDescription(p.getDescription());
-        this.setPrice(p.getPrice());
-        this.setCategoryId(p.getCategoryId());
-        this.setProductImage(p.getProductImage());
-    }
 }

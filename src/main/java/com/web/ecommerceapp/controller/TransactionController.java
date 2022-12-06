@@ -9,9 +9,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,18 +24,18 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
-    TransactionService transactionService;
+    @Autowired
+    private TransactionService transactionService;
 
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
-    }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Get all transactions")
     @GetMapping
     public ResponseEntity<List<TransactionResponseDto>> getAllTransactions(){
         return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Get all transactions")
     @PostMapping("/get-all")
     public ResponseEntity<PaginationResponseDto<TransactionResponseDto>> getAllTransactionsWithPagination(@RequestBody PaginationRequestDto paginationRequestDto){

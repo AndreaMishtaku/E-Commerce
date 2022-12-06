@@ -1,9 +1,12 @@
 package com.web.ecommerceapp.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 
 @Entity
+@Data
 @Table(name="operator_setting")
 public class OperatorSetting {
     @Id

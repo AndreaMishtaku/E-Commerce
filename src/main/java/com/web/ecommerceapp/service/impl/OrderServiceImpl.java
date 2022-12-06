@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponseDto> getAllOrdersUser(Principal principal) {
+    public List<OrderResponseDto> getAllOrdersOfOperator(Principal principal) {
 
         User user=userRepository.getUserByEmailOrUsername(principal.getName(), principal.getName());
 
@@ -161,8 +161,8 @@ public class OrderServiceImpl implements OrderService {
         User user=userRepository.getUserByEmailOrUsername(principal.getName(), principal.getName());
         Order order=orderRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Order","id",id));
 
-        if(user.getId()!=order.getUser().getId()){
-            throw new RuntimeException("Nuk keni akses per kete id");
+        if(!canAccessOrderById(user,order)){
+            throw new RuntimeException("Nuk keni akses per kete order");
         }
 
         OrderResponseDto orderResponse=orderMapper.orderToDto(order);
@@ -180,5 +180,34 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.delete(order);
         return new ActionSuccessful(true,"Order deleted successfully");
+    }
+
+    @Override
+    public List<OrderResponseDto> getAllOnlineOrders() {
+        List<Order> orders=orderRepository.getOnlineOrders();
+
+        List<OrderResponseDto> orderList=orderMapper.orderToDto(orders);
+
+        return null;
+    }
+
+    private boolean canAccessOrderById(User user,Order order){
+        User orderUser=order.getUser();
+        if(orderUser!=null) {
+            if(orderUser.getId()==user.getId()){
+                return true;
+            }
+            for (OperatorSetting o:
+                    user.getOperatorSettingOperator()
+                 ) {
+
+                if(o.getManager().getId()==order.getUser().getId()){
+                    return true;
+                }
+
+            }
+
+        }
+        return false;
     }
 }

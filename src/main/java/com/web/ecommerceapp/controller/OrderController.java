@@ -8,8 +8,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -19,41 +21,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-
+    @Autowired
     private OrderService orderService;
-
-    public OrderController(OrderService orderService) {
-        this.orderService= orderService;
-    }
 
     @ApiOperation(value = "Create Order")
     @PostMapping
-    public ResponseEntity<ActionSuccessful> createProduct(@RequestBody OrderRequestDto orderDto, Principal principal){
+    public ResponseEntity<ActionSuccessful> createOrder(@RequestBody OrderRequestDto orderDto, Principal principal){
         return new ResponseEntity<>(orderService.createOrder(orderDto,principal), HttpStatus.CREATED);
     }
 
-
-    @ApiOperation(value = "Get orders by client id")
-    @GetMapping("/user")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByUser(Principal principal){
-        return new ResponseEntity<>(orderService.getAllOrdersUser(principal),HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Get all orders")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Get all orders ADMIN")
     @GetMapping
     public ResponseEntity<List<OrderResponseDto>> getOrders(){
         return new ResponseEntity<>(orderService.getAllOrders(),HttpStatus.OK);
     }
 
-    @ApiOperation(value ="Get order by order id" )
+    @ApiOperation(value ="Get order by order id  OPERATOR|MANAGER|ADMIN")
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDto> getOrderById(@PathVariable(name = "id") long id,Principal principal){
         return new ResponseEntity<>(orderService.getOrderById(id,principal),HttpStatus.OK);
     }
-
-    @ApiOperation(value ="Get order by order id" )
+    @PreAuthorize("hasRole('MANAGER')")
+    @ApiOperation(value ="Delete order by order id" )
     @DeleteMapping("/{id}")
     public ResponseEntity<ActionSuccessful> deleteOrderById(@PathVariable(name = "id") long id,Principal principal){
         return new ResponseEntity<>(orderService.deleteOrderById(id,principal),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Get all online orders")
+    @GetMapping("/online")
+    public ResponseEntity<List<OrderResponseDto>> getOnlineOrders(){
+        return new ResponseEntity<>(orderService.getAllOnlineOrders(),HttpStatus.OK);
     }
 }

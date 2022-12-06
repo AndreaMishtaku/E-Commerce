@@ -10,7 +10,7 @@ import java.util.List;
 public interface OrderService {
     ActionSuccessful createOrder(OrderRequestDto orderDto, Principal principal);
 
-    List<OrderResponseDto> getAllOrdersUser(Principal principal);
+    List<OrderResponseDto> getAllOrdersOfOperator(Principal principal);
 
     List<OrderResponseDto> getAllOrders();
 
@@ -18,4 +18,6 @@ public interface OrderService {
 
 
     ActionSuccessful deleteOrderById(Long id,Principal principal);
+
+    List<OrderResponseDto> getAllOnlineOrders();
 }

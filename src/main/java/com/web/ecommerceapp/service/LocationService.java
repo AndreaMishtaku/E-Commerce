@@ -6,6 +6,7 @@ import com.web.ecommerceapp.payload.location.ProductLocationRequestDto;
 import com.web.ecommerceapp.payload.location.ProductLocationResponseDto;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface LocationService {
@@ -14,7 +15,7 @@ public interface LocationService {
 
     List<LocationResponseDto> getAllLocations();
 
-    LocationResponseDto getLocationById(Long id);
+    LocationResponseDto getLocationById(Principal principal,Long id);
 
     ActionSuccessful updateLocation(LocationRequestDto locationDto,Long id);
 
@@ -24,5 +25,5 @@ public interface LocationService {
 
     ActionSuccessful deleteLocation(Long id);
 
-    List<ProductLocationResponseDto> getLocationProducts(Long id);
+    List<ProductLocationResponseDto> getLocationProducts(Principal principal,Long id);
 }

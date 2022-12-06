@@ -34,7 +34,6 @@ public class LocationController {
         return new ResponseEntity<>(locationService.createLocation(locationRequestDto), HttpStatus.CREATED);
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Get all locations")
     @GetMapping
@@ -42,35 +41,40 @@ public class LocationController {
         return new ResponseEntity<>(locationService.getAllLocations(),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     @GetMapping("/{id}")
     @ApiOperation(value = "Get product by id")
-    public ResponseEntity<LocationResponseDto> getLocationById(@PathVariable(name="id") Long id){
-        return new ResponseEntity<>(locationService.getLocationById(id),HttpStatus.OK);
-    }
-    @GetMapping("/{id}/products")
-    @ApiOperation(value = "Get products")
-    public ResponseEntity<List<ProductLocationResponseDto>> getLocations(@PathVariable(name="id") Long id){
-        return new ResponseEntity<>(locationService.getLocationProducts(id),HttpStatus.OK);
+    public ResponseEntity<LocationResponseDto> getLocationById(Principal principal,@PathVariable(name="id") Long id){
+        return new ResponseEntity<>(locationService.getLocationById(principal,id),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @GetMapping("/{id}/products")
+    @ApiOperation(value = "Get products in location")
+    public ResponseEntity<List<ProductLocationResponseDto>> getProductLocations(Principal principal,@PathVariable(name="id") Long id){
+        return new ResponseEntity<>(locationService.getLocationProducts(principal,id),HttpStatus.OK);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Update location")
     public ResponseEntity<ActionSuccessful> updateLocation(@RequestBody LocationRequestDto productRequestDto,@PathVariable(name="id") Long id){
         return new ResponseEntity<>(locationService.updateLocation(productRequestDto,id),HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/{locationId}")
     @ApiOperation(value = "Add product to location")
     public ResponseEntity<ActionSuccessful> addLocation(@RequestBody ProductLocationRequestDto locationAddProductDto, @PathVariable(name="locationId") Long locationId){
         return new ResponseEntity<>(locationService.addNewProduct(locationAddProductDto,locationId),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/{locationId}/deleteProduct")
     @ApiOperation(value = "Remove product from location")
     public ResponseEntity<ActionSuccessful> removeLocation(@RequestBody ProductLocationRequestDto productLocationDto, @PathVariable(name="locationId") Long locationId){
         return new ResponseEntity<>(locationService.removeProduct(productLocationDto,locationId),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Delete location")
     @DeleteMapping("/{id}")
     public ResponseEntity<ActionSuccessful> deleteLocation(@PathVariable(name="id") Long id){
