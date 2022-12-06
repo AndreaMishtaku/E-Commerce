@@ -27,8 +27,8 @@ public class Product extends BaseEntity{
     @Column(name="description")
     private String description;
 
-    @Column(name="base64Image")
-    private String base64Image;
+    @Column(name="productImage")
+    private String productImage;
     @Column(name="price")
     private Double price;
 
@@ -42,7 +42,7 @@ public class Product extends BaseEntity{
     private Discount discount;
 
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product")
     private Set<ProductLocation> productLocations;
 
     @CreationTimestamp

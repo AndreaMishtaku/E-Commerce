@@ -14,8 +14,8 @@ public class ProductResponseDto {
     private Long id;
     private String name;
     private String description;
-    private String base64Image;
-    private Float price;
+    private String productImage;
+    private Double price;
     private Long categoryId;
     private Long dicountId;
 
