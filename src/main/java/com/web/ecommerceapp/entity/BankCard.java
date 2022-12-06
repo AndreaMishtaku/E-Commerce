@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Table(name="bank_cards",uniqueConstraints=@UniqueConstraint(columnNames={"code"}))
 public class BankCard extends BaseEntity{
 
-    @Column(name="")
+    @Column(name="code")
     private String code;
 
     @Column(name="password")

@@ -42,7 +42,7 @@ public class Product extends BaseEntity{
     private Discount discount;
 
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private Set<ProductLocation> productLocations;
 
     @CreationTimestamp
