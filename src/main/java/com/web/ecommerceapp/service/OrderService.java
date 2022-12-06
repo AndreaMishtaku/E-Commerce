@@ -12,6 +12,7 @@ public interface OrderService {
 
     List<OrderResponseDto> getAllOrdersOfOperator(Principal principal);
 
+    List<OrderResponseDto> getAllOrdersOfManager(Principal principal);
     List<OrderResponseDto> getAllOrders();
 
     OrderResponseDto getOrderById(Long id,Principal principal);

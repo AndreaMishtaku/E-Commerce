@@ -24,7 +24,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @ApiOperation(value = "Create Order")
+    @ApiOperation(value = "Create Order **")
     @PostMapping
     public ResponseEntity<ActionSuccessful> createOrder(@RequestBody OrderRequestDto orderDto, Principal principal){
         return new ResponseEntity<>(orderService.createOrder(orderDto,principal), HttpStatus.CREATED);
@@ -43,14 +43,14 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderById(id,principal),HttpStatus.OK);
     }
     @PreAuthorize("hasRole('MANAGER')")
-    @ApiOperation(value ="Delete order by order id" )
+    @ApiOperation(value ="Delete order by order id  ADMIN" )
     @DeleteMapping("/{id}")
     public ResponseEntity<ActionSuccessful> deleteOrderById(@PathVariable(name = "id") long id,Principal principal){
         return new ResponseEntity<>(orderService.deleteOrderById(id,principal),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation(value = "Get all online orders")
+    @ApiOperation(value = "Get all online orders  ADMIN")
     @GetMapping("/online")
     public ResponseEntity<List<OrderResponseDto>> getOnlineOrders(){
         return new ResponseEntity<>(orderService.getAllOnlineOrders(),HttpStatus.OK);

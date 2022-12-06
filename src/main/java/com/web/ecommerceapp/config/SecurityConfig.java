@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .antMatchers("/webjars/**").permitAll()
                         .antMatchers("/api/authentication/**").permitAll()
                         .antMatchers("/api/bankCards/**").permitAll()
-                        .antMatchers("/api/orders/**").permitAll()
+                        .antMatchers("/api/orders").permitAll()
                         .anyRequest()
                         .authenticated()
                 );

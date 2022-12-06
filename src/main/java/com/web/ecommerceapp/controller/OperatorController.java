@@ -34,7 +34,7 @@ public class OperatorController {
         this.operatorService=operatorService;
     }
 
-    @ApiOperation(value = "Register operator")
+    @ApiOperation(value = "Register operator MANAGER")
     @PostMapping
     public ResponseEntity<ActionSuccessful> registerOperator(@RequestBody OperatorRegisterDto operatorRegisterDto){
         return new ResponseEntity<>(operatorService.registerOperator(operatorRegisterDto), HttpStatus.CREATED);

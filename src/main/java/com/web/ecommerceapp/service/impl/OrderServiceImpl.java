@@ -146,6 +146,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderResponseDto> getAllOrdersOfManager(Principal principal) {
+        User user=userRepository.getUserByEmailOrUsername(principal.getName(), principal.getName());
+
+        List<Order> orders=orderRepository.getOrdersForManager(user.getId());
+
+        List< OrderResponseDto> orderList=orderMapper.orderToDto(orders);
+
+        return orderList;
+    }
+
+    @Override
     public List<OrderResponseDto> getAllOrders() {
         List<Order> orders=orderRepository.findAll();
 
