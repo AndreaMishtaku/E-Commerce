@@ -50,7 +50,7 @@ public class AuthenticationController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @ApiOperation(value = "REST API to Signin or Login user to Blog app")
+    @ApiOperation(value = "User log in **")
     @PostMapping("/signin")
     public ResponseEntity<TokenDto> authenticateUser(@RequestBody LoginDto loginDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -64,7 +64,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(tokenDto);
     }
 
-    @ApiOperation(value = "REST API to Register or Signup  user to Blog app")
+    @ApiOperation(value = "User register as MANAGER **")
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody RegisterDto registerDto){
         if(userRepository.existsByUsername(registerDto.getUsername())){
@@ -92,6 +92,8 @@ public class AuthenticationController {
         return new ResponseEntity<>(new ActionSuccessful(true,"User registered successfully"), HttpStatus.OK);
     }
 
+
+    @ApiOperation(value = "Refresh token")
     @PostMapping("/refresh-token")
     public ResponseEntity<TokenDto> refreshToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

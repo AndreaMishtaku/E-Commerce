@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,11 +24,11 @@ import java.util.List;
 @RequestMapping("/api/locations")
 public class LocationController {
 
+    @Autowired
     private LocationService locationService;
 
-    public LocationController(LocationService locationService) {
-        this.locationService = locationService;
-    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Create location")
     @PostMapping
     public ResponseEntity<ActionSuccessful> createLocation(@RequestBody LocationRequestDto locationRequestDto){

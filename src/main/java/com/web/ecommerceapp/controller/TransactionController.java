@@ -27,16 +27,15 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-
     @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation(value = "Get all transactions")
+    @ApiOperation(value = "Get all transactions ADMIN")
     @GetMapping
     public ResponseEntity<List<TransactionResponseDto>> getAllTransactions(){
         return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation(value = "Get all transactions")
+    @ApiOperation(value = "Get all transactions with pagination ADMIN")
     @PostMapping("/get-all")
     public ResponseEntity<PaginationResponseDto<TransactionResponseDto>> getAllTransactionsWithPagination(@RequestBody PaginationRequestDto paginationRequestDto){
         return new ResponseEntity<>(transactionService.getAllTransactionsWithPagination(paginationRequestDto), HttpStatus.OK);

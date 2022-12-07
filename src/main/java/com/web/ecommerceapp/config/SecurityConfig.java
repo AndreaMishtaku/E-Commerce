@@ -57,6 +57,9 @@ public class SecurityConfig {
                         .antMatchers("/api/authentication/**").permitAll()
                         .antMatchers("/api/bankCards/**").permitAll()
                         .antMatchers("/api/orders").permitAll()
+                        .antMatchers("/api/products/**").permitAll()
+                        .antMatchers("/api/bankAccounts/**").permitAll()
+                        .antMatchers("/api/bankCards/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 );

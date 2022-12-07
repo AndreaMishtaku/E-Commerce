@@ -2,6 +2,8 @@ package com.web.ecommerceapp.controller;
 
 import com.web.ecommerceapp.payload.order.OrderResponseDto;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
+import com.web.ecommerceapp.payload.user.ManagerResponseDto;
+import com.web.ecommerceapp.payload.user.OperatorResponseDto;
 import com.web.ecommerceapp.payload.user.RegisterDto;
 import com.web.ecommerceapp.service.ManagerService;
 import com.web.ecommerceapp.service.OrderService;
@@ -35,12 +37,30 @@ public class ManagerController {
     public ResponseEntity<ActionSuccessful> registerManager(@RequestBody RegisterDto registerDto){
         return new ResponseEntity<>(managerService.registerManager(registerDto), HttpStatus.CREATED);
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Get all managers  ADMIN")
+    @GetMapping
+    public ResponseEntity<List<ManagerResponseDto>> getAll(){
+        return new ResponseEntity<>(managerService.getAll(),HttpStatus.OK);
+    }
 
-    @PreAuthorize("hasRole('Manager')")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Get manager by id ADMIN")
+    @GetMapping("/{id}")
+    public ResponseEntity<ManagerResponseDto> getManagerById(@PathVariable(name = "id")Long id){
+        return new ResponseEntity<>(managerService.getManagerById(id),HttpStatus.OK);
+    }
+    @PreAuthorize("hasRole('MANAGER')")
     @ApiOperation(value = "Get orders of manager")
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderResponseDto>> getOperatorOrders(Principal principal){
+    public ResponseEntity<List<OrderResponseDto>> getManagerOrders(Principal principal){
         return new ResponseEntity<>(orderService.getAllOrdersOfManager(principal),HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
+    @ApiOperation(value = "Get operators of manager")
+    @GetMapping("/operators")
+    public ResponseEntity<List<OperatorResponseDto>> getOperatorsOfManager(Principal principal){
+        return new ResponseEntity<>(managerService.getOperatorsOfManager(principal),HttpStatus.OK);
+    }
 }

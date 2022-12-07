@@ -2,9 +2,11 @@ package com.web.ecommerceapp.service.impl;
 
 import com.web.ecommerceapp.entity.Role;
 import com.web.ecommerceapp.entity.User;
+import com.web.ecommerceapp.exception.ResourceNotFoundException;
 import com.web.ecommerceapp.mapper.UserMapper;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
 import com.web.ecommerceapp.payload.user.OperatorRegisterDto;
+import com.web.ecommerceapp.payload.user.OperatorResponseDto;
 import com.web.ecommerceapp.payload.user.RegisterDto;
 import com.web.ecommerceapp.repository.RoleRepository;
 import com.web.ecommerceapp.repository.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class OperatorServiceImpl implements OperatorService {
@@ -44,5 +47,20 @@ public class OperatorServiceImpl implements OperatorService {
 
 
         return new ActionSuccessful(true,"Operator created successfully");
+    }
+
+    @Override
+    public List<OperatorResponseDto> getAll() {
+        List<User> users=userRepository.getUserByRole("ROLE_OPERATOR");
+        List<OperatorResponseDto> operatorlist=userMapper.operatorToDto(users);
+
+        return operatorlist;
+    }
+
+    @Override
+    public OperatorResponseDto getOperatorById(Long id) {
+        User user=userRepository.findOperatorById(id).orElseThrow(()->new ResourceNotFoundException("User","id",id));
+        OperatorResponseDto operator=userMapper.operatorToDto(user);
+        return operator;
     }
 }

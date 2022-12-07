@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +18,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/bankCards")
 public class BankCardController {
 
+    @Autowired
     private BankCardService bankCardService;
 
-    public BankCardController(BankCardService bankCardService) {
-        this.bankCardService = bankCardService;
-    }
 
-    @ApiOperation(value = "Create BankAccount")
+
+    @ApiOperation(value = "Create Bank Card **")
     @PostMapping
-    public ResponseEntity<ActionSuccessful> createBankAccount(@RequestBody BankCardRequestDto bankCardRequestDto){
+    public ResponseEntity<ActionSuccessful> createBankCard(@RequestBody BankCardRequestDto bankCardRequestDto){
         return new ResponseEntity<>(bankCardService.createBankCard(bankCardRequestDto), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Delete BankAccount")
+    @ApiOperation(value = "Delete Bank Card **")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ActionSuccessful> deleteBankAccount(@PathVariable(name = "id") Long id){
+    public ResponseEntity<ActionSuccessful> deleteBankCard(@PathVariable(name = "id") Long id){
         return new ResponseEntity<>(bankCardService.deleteBankCard(id),HttpStatus.OK);
     }
 }

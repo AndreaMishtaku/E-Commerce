@@ -2,7 +2,9 @@ package com.web.ecommerceapp.controller;
 
 import com.web.ecommerceapp.payload.order.OrderResponseDto;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
+import com.web.ecommerceapp.payload.user.ManagerResponseDto;
 import com.web.ecommerceapp.payload.user.OperatorRegisterDto;
+import com.web.ecommerceapp.payload.user.OperatorResponseDto;
 import com.web.ecommerceapp.payload.user.RegisterDto;
 import com.web.ecommerceapp.service.ManagerService;
 import com.web.ecommerceapp.service.OperatorService;
@@ -34,12 +36,26 @@ public class OperatorController {
         this.operatorService=operatorService;
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @ApiOperation(value = "Register operator MANAGER")
     @PostMapping
     public ResponseEntity<ActionSuccessful> registerOperator(@RequestBody OperatorRegisterDto operatorRegisterDto){
         return new ResponseEntity<>(operatorService.registerOperator(operatorRegisterDto), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(value = "Get all operators  ADMIN")
+    @GetMapping
+    public ResponseEntity<List<OperatorResponseDto>> getAll(){
+        return new ResponseEntity<>(operatorService.getAll(),HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
+    @ApiOperation(value = "Get operator by id ADMIN|MANAGER")
+    @GetMapping("/{id}")
+    public ResponseEntity<OperatorResponseDto> getOperatorById(@PathVariable(name = "id")Long id){
+        return new ResponseEntity<>(operatorService.getOperatorById(id),HttpStatus.OK);
+    }
     @PreAuthorize("hasRole('OPERATOR')")
     @ApiOperation(value = "Get orders of operator")
     @GetMapping("/orders")
