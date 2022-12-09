@@ -1,9 +1,6 @@
 package com.web.ecommerceapp.mapper;
 
-
-import com.web.ecommerceapp.entity.Product;
 import com.web.ecommerceapp.entity.User;
-import com.web.ecommerceapp.payload.product.ProductResponseDto;
 import com.web.ecommerceapp.payload.user.ManagerResponseDto;
 import com.web.ecommerceapp.payload.user.OperatorRegisterDto;
 import com.web.ecommerceapp.payload.user.OperatorResponseDto;
