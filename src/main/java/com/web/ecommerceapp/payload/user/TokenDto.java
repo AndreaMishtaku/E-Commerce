@@ -2,7 +2,7 @@ package com.web.ecommerceapp.payload.user;
 import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class TokenDto {
     private String accessToken;
     private String refreshToken;

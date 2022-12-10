@@ -1,5 +1,6 @@
 package com.web.ecommerceapp.controller;
 
+import com.web.ecommerceapp.entity.RefreshToken;
 import com.web.ecommerceapp.entity.Role;
 import com.web.ecommerceapp.entity.User;
 import com.web.ecommerceapp.payload.response.ActionSuccessful;
@@ -8,11 +9,14 @@ import com.web.ecommerceapp.payload.user.RegisterDto;
 import com.web.ecommerceapp.payload.user.TokenDto;
 import com.web.ecommerceapp.repository.RoleRepository;
 import com.web.ecommerceapp.repository.UserRepository;
-import com.web.ecommerceapp.security.JwtTokenProvider;
+import com.web.ecommerceapp.security.JwtUtils;
+import com.web.ecommerceapp.service.impl.RefreshTokenService;
+import com.web.ecommerceapp.service.impl.UserDetailsImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.Collections;
-
 @Api(value = "Sign in and sign up users", tags = {"Authentication"},description = "Sign in and sign up users")
 @SwaggerDefinition(tags = {@Tag(name = "Authentication") })
 @RestController
@@ -48,7 +51,10 @@ public class AuthenticationController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @ApiOperation(value = "User log in **")
     @PostMapping("/signin")
@@ -58,8 +64,13 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // get token form tokenProvider
-        TokenDto tokenDto = this.jwtTokenProvider.generateToken(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        String jwt = jwtUtils.generateJwtToken(userDetails);
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getUsername());
+
+        TokenDto tokenDto = new TokenDto(jwt,refreshToken.getToken());
 
         return ResponseEntity.ok(tokenDto);
     }
@@ -82,7 +93,6 @@ public class AuthenticationController {
         user.setUsername(registerDto.getUsername());
         user.setEmail(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-        user.setCreated_at(LocalDate.now());
 
         Role roles = roleRepository.findByName("ROLE_MANAGER").get();
         user.setRoles(Collections.singleton(roles));
@@ -95,11 +105,23 @@ public class AuthenticationController {
 
     @ApiOperation(value = "Refresh token")
     @PostMapping("/refresh-token")
-    public ResponseEntity<TokenDto> refreshToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<TokenDto> refreshToken(@RequestBody TokenDto tokenDto) {
+        String requestRefreshToken = tokenDto.getRefreshToken();
 
-        TokenDto tokenDto = this.jwtTokenProvider.generateToken(authentication);
-
-        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+       // RefreshToken refreshToken=refreshTokenService.getByToken(requestRefreshToken);
+//
+//
+//
+       // refreshTokenService.verifyExpiration(refreshToken);
+//
+       // User user=refreshToken.getUser();
+//
+       // String newToken=jwtUtils.generateTokenFromUsername(user.getUsername());
+       // RefreshToken newRefreshToken=refreshTokenService.generateNewRefreshToken(user);
+//
+       // TokenDto tokenDtoResponse = new TokenDto(newToken,newRefreshToken.getToken());
+//
+       // return ResponseEntity.ok(tokenDtoResponse);
+        return null;
     }
 }
